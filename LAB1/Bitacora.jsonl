@@ -1,0 +1,4 @@
+{"operacion": "INSERT", "datos": {"nombre": "Diego", "id_persona": "42345243", "fecha_nacimiento": "01/01/1900", "direccion": "Guatemala"}}
+{"operacion": "INSERT", "datos": {"nombre": "OtraPersona", "id_persona": "87654321", "fecha_nacimiento": "02/02/2000", "direccion": "OtroLugar"}}
+{"operacion": "PATCH", "datos": {"nombre": "OtraPersona", "id_persona": "87654321", "fecha_nacimiento": "08/06/2005"}}
+{"operacion": "INSERT", "datos": {"nombre": "MAX", "id_persona": "9903730", "fecha_nacimiento": "02/02/1995", "direccion": "SALVADOR"}}
