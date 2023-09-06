@@ -1,4 +1,4 @@
-class NodoArbolB:
+"""class NodoArbolB:
     def __init__(self, es_hoja=True):
         self.es_hoja = es_hoja
         self.claves = []
@@ -101,4 +101,4 @@ class NodoArbolB:
             # Actualizar la clave y el dato en el nodo hoja
             if clave in self.claves:
                 indice = self.claves.index(clave)
-                self.datos[indice] = nueva_persona
+                self.datos[indice] = nueva_persona"""
