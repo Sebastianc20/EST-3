@@ -81,9 +81,16 @@ class VistaRegistroPersonas:
                 if registros:
                     print("\nRegistros encontrados:")
                     for registro in registros:
-                        print(f"Nombre: {registro.Nombre}, ID: {registro.Id_Personas}, Fecha Nacimiento: {registro.Fecha_Nacimiento}, Dirección: {registro.Direccion}")
+                        json_data = {
+                            "name": registro.Nombre,
+                            "dpi": registro.Id_Personas,
+                            "dateBirth": registro.Fecha_Nacimiento,
+                            "address": registro.Direccion
+                        }
+                        json_str = json.dumps(json_data)
+                        print(f"INSERT;{json_str}")
                 else:
-                    print(f"No se encontraron registros para el nombre: {nombre}")
+                        print(f"No se encontraron registros para el nombre: {nombre}")
 
             elif opcion == "5":
                 break
