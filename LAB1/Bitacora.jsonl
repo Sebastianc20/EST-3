@@ -1,5 +1,2 @@
-{"operacion": "INSERT", "datos": {"nombre": "Diego", "id_persona": "42345243", "fecha_nacimiento": "01/01/1900", "direccion": "Guatemala"}}
-{"operacion": "INSERT", "datos": {"nombre": "OtraPersona", "id_persona": "87654321", "fecha_nacimiento": "02/02/2000", "direccion": "OtroLugar"}}
-{"operacion": "PATCH", "datos": {"nombre": "OtraPersona", "id_persona": "87654321", "fecha_nacimiento": "08/06/2005", "direccion": "ALEMANIA"}}
-{"operacion": "INSERT", "datos": {"nombre": "MAX", "id_persona": "9903730", "fecha_nacimiento": "02/02/1995", "direccion": "SALVADOR"}}
-{"operacion": "DELETE", "datos": {"nombre": "OtraPersona", "id_persona": "87654321", "fecha_nacimiento": "02/02/2000", "direccion": "OtroLugar"}}
+INSERT;{"name":"sebastian cuevas","dpi":"2011002194","dateBirth":"1987-09-20", "address":"123 Main St, Mexico City"}
+INSERT;{"name":"Sophia Rodriguez","dpi":"23456789012345","dateBirth":"1995-03-12", "address":"456 Elm Ave, Bogota"}

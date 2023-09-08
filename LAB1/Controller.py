@@ -33,33 +33,35 @@ class RegistroPersonas:
         try:
             with open(archivo_jsonl, "r") as jsonl_file:
                 for line in jsonl_file:
-                    entrada = json.loads(line)
-                    operacion = entrada["operacion"]
-                    datos_persona = entrada["datos"]
+                    partes = line.strip().split(";")  # Divide la línea en dos partes: operación y datos
+                    operacion = partes[0]
+                    datos_json = partes[1]  # Datos en formato JSON
+
+                    datos_persona = json.loads(datos_json)  # Convierte los datos JSON en un diccionario Python
 
                     if operacion == "INSERT":
-                        nombre = datos_persona["nombre"]
-                        id_persona = datos_persona["id_persona"]
-                        fecha_nacimiento = datos_persona["fecha_nacimiento"]
-                        direccion = datos_persona["direccion"] if "direccion" in datos_persona else None
+                        nombre = datos_persona["name"]
+                        id_persona = datos_persona["dpi"]
+                        fecha_nacimiento = datos_persona["dateBirth"]
+                        direccion = datos_persona["address"]
                         self.insertar_persona(nombre, id_persona, fecha_nacimiento, direccion)
 
                     elif operacion == "PATCH":
-                        nombre = datos_persona["nombre"]
-                        id_persona = datos_persona["id_persona"]
-                        nueva_fecha_nacimiento = datos_persona["fecha_nacimiento"]
-                        nueva_direccion = datos_persona["direccion"] if "direccion" in datos_persona else None
+                        nombre = datos_persona["name"]
+                        id_persona = datos_persona["dpi"]
+                        nueva_fecha_nacimiento = datos_persona["dateBirth"]
+                        nueva_direccion = datos_persona["address"]
                         self.actualizar_persona(nombre, id_persona, nueva_fecha_nacimiento, nueva_direccion)
 
                     elif operacion == "DELETE":
-                        nombre = datos_persona["nombre"]
-                        id_persona = datos_persona["id_persona"]
+                        nombre = datos_persona["name"]
+                        id_persona = datos_persona["dpi"]
                         self.eliminar_persona(nombre, id_persona)
 
         except FileNotFoundError as e:
             print(f"Error: {e}")
 
-# Crear una instancia de la clase RegistroPersonas fuera de la clase
+# Crear una instancia de la clase RegistroPersonas
 base_de_datos = RegistroPersonas()
 
 # Llamar a la función procesar_jsonl después de crear la instancia

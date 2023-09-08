@@ -6,44 +6,43 @@ class VistaRegistroPersonas:
         self.base_de_datos = RegistroPersonas()
 
     def cargar_datos_desde_jsonl(self, archivo_jsonl):
-        operaciones = []  # Lista para almacenar las operaciones
-
         try:
             with open(archivo_jsonl, "r") as jsonl_file:
                 for line in jsonl_file:
-                    entrada = json.loads(line)
-                    operaciones.append(entrada)  # Almacena la operación en la lista
+                    partes = line.strip().split(";")  # Divide la línea en dos partes: operación y datos
+                    operacion = partes[0]
+                    print(operacion)
+                    datos_json = partes[1]  # Datos en formato JSON
+                    print(datos_json)
 
-            # Itera sobre las operaciones después de leer todo el archivo
-            for entrada in operaciones:
-                operacion = entrada["operacion"]
-                datos_persona = entrada["datos"]
+                    datos_persona = json.loads(datos_json)  # Convierte los datos JSON en un diccionario Python
 
-                if operacion == "INSERT":
-                    nombre = datos_persona["nombre"]
-                    id_persona = datos_persona["id_persona"]
-                    fecha_nacimiento = datos_persona["fecha_nacimiento"]
-                    direccion = datos_persona["direccion"] if "direccion" in datos_persona else None
-                    self.base_de_datos.insertar_persona(nombre, id_persona, fecha_nacimiento, direccion)
-                    print(f"Persona insertada correctamente: {nombre}")
+                    if operacion == "INSERT":
+                        nombre = datos_persona["name"]
+                        id_persona = datos_persona["dpi"]
+                        fecha_nacimiento = datos_persona["dateBirth"]
+                        direccion = datos_persona["address"]
+                        self.base_de_datos.insertar_persona(nombre, id_persona, fecha_nacimiento, direccion)
+                        print(f"Persona insertada correctamente: {nombre}")
 
-                elif operacion == "PATCH":
-                    nombre = datos_persona["nombre"]
-                    id_persona = datos_persona["id_persona"]
-                    nueva_fecha_nacimiento = datos_persona["fecha_nacimiento"]
-                    nueva_direccion = datos_persona["direccion"] if "direccion" in datos_persona else None
-                    self.base_de_datos.actualizar_persona(nombre, id_persona, nueva_fecha_nacimiento, nueva_direccion)
-                    print(f"Fecha de nacimiento actualizada para: {nombre}")
+                    elif operacion == "PATCH":
+                        nombre = datos_persona["name"]
+                        id_persona = datos_persona["dpi"]
+                        nueva_fecha_nacimiento = datos_persona["dateBirth"]
+                        nueva_direccion = datos_persona["address"]
+                        self.base_de_datos.actualizar_persona(nombre, id_persona, nueva_fecha_nacimiento, nueva_direccion)
+                        print(f"Fecha de nacimiento actualizada para: {nombre}")
 
-                elif operacion == "DELETE":
-                    nombre = datos_persona["nombre"]
-                    id_persona = datos_persona["id_persona"]
-                    self.base_de_datos.eliminar_persona(nombre, id_persona)
-                    print(f"Persona eliminada: {nombre}")
+                    elif operacion == "DELETE":
+                        nombre = datos_persona["name"]
+                        id_persona = datos_persona["dpi"]
+                        self.base_de_datos.eliminar_persona(nombre, id_persona)
+                        print(f"Persona eliminada: {nombre}")
 
-            print("Datos cargados exitosamente desde el archivo JSONL.")
+                        print("Datos cargados exitosamente desde el archivo JSONL.")
         except FileNotFoundError as e:
             print(f"Error: {e}")
+
 
     def mostrar_menu(self):
         while True:
@@ -51,7 +50,7 @@ class VistaRegistroPersonas:
             print("1. Cargar datos desde archivo JSONL")
             print("2. Eliminar persona")
             print("3. Actualizar persona")
-            print("4. Buscar registros por nombre")
+            print("4. Buscar registros por nombre y ID")
             print("5. Salir")
 
             opcion = input("Selecciona una opción: ")
