@@ -1,4 +1,5 @@
 from Model import ArbolB
+import json
 
 class Personas:
     def __init__(self, nombre, id_persona, fecha_nacimiento, direccion):
@@ -28,6 +29,38 @@ class RegistroPersonas:
     def buscar_registros_por_nombre(self, nombre, id_persona):
         return self.arbol_b.buscar(nombre, id_persona)
 
-    
-    # Crear una instancia de la clase RegistroPersonas
+    def procesar_jsonl(self, archivo_jsonl):
+        try:
+            with open(archivo_jsonl, "r") as jsonl_file:
+                for line in jsonl_file:
+                    entrada = json.loads(line)
+                    operacion = entrada["operacion"]
+                    datos_persona = entrada["datos"]
+
+                    if operacion == "INSERT":
+                        nombre = datos_persona["nombre"]
+                        id_persona = datos_persona["id_persona"]
+                        fecha_nacimiento = datos_persona["fecha_nacimiento"]
+                        direccion = datos_persona["direccion"] if "direccion" in datos_persona else None
+                        self.insertar_persona(nombre, id_persona, fecha_nacimiento, direccion)
+
+                    elif operacion == "PATCH":
+                        nombre = datos_persona["nombre"]
+                        id_persona = datos_persona["id_persona"]
+                        nueva_fecha_nacimiento = datos_persona["fecha_nacimiento"]
+                        nueva_direccion = datos_persona["direccion"] if "direccion" in datos_persona else None
+                        self.actualizar_persona(nombre, id_persona, nueva_fecha_nacimiento, nueva_direccion)
+
+                    elif operacion == "DELETE":
+                        nombre = datos_persona["nombre"]
+                        id_persona = datos_persona["id_persona"]
+                        self.eliminar_persona(nombre, id_persona)
+
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
+
+# Crear una instancia de la clase RegistroPersonas fuera de la clase
 base_de_datos = RegistroPersonas()
+
+# Llamar a la función procesar_jsonl después de crear la instancia
+base_de_datos.procesar_jsonl("Bitacora.jsonl")

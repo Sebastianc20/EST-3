@@ -1,12 +1,3 @@
-import os
-
-def limpiar_consola():
-        if os.name == 'posix':
-            os.system('clear')
-        elif os.name == 'nt':
-            os.system('cls')
-        else:
-            print("'\n' * 100")
         
 class NodoArbolB:
     def __init__(self, es_hoja=True, max_claves=3):
