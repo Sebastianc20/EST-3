@@ -25,16 +25,9 @@ class RegistroPersonas:
         nueva_persona = Personas(nombre, id_persona, nueva_fecha_nacimiento, nueva_direccion)
         self.arbol_b.actualizar(clave, nueva_persona)
 
-    def buscar_registros_por_nombre(self, nombre):
-        resultados = self.arbol_b.buscar(nombre)
+    def buscar_registros_por_nombre(self, nombre, id_persona):
+        return self.arbol_b.buscar(nombre, id_persona)
 
-        if resultados is not None:
-            registros = [resultado[1] for resultado in resultados]
-            return registros
-        else:
-            return []
-
- 
     
     # Crear una instancia de la clase RegistroPersonas
 base_de_datos = RegistroPersonas()

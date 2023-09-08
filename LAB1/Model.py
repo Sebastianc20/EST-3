@@ -1,3 +1,13 @@
+import os
+
+def limpiar_consola():
+        if os.name == 'posix':
+            os.system('clear')
+        elif os.name == 'nt':
+            os.system('cls')
+        else:
+            print("'\n' * 100")
+        
 class NodoArbolB:
     def __init__(self, es_hoja=True, max_claves=3):
         self.es_hoja = es_hoja
@@ -61,6 +71,29 @@ class NodoArbolB:
 
     def es_nodo_lleno(self):
         return len(self.claves) >= self.max_claves
+    
+    
+    def buscar_por_nombre_y_id(self, nombre, id_persona):
+        resultados = []
+
+        def buscar_en_nodo(nodo):
+            if not nodo:
+                return
+
+            for i in range(len(nodo.claves)):
+                clave = nodo.claves[i]
+                if nombre == clave[0] and (id_persona is None or id_persona == clave[1]):
+                    resultados.append(nodo.datos[i])
+
+                if not nodo.es_hoja:
+                    buscar_en_nodo(nodo.hijos[i])
+
+            if not nodo.es_hoja:
+                buscar_en_nodo(nodo.hijos[-1])
+
+        buscar_en_nodo(self)
+
+        return resultados
 
 
 class ArbolB:
@@ -77,8 +110,8 @@ class ArbolB:
     def actualizar(self, clave, nueva_persona):
         pass
 
-    def buscar(self, clave):
-        pass
+    def buscar(self, nombre, id_persona):
+       return self.raiz.buscar_por_nombre_y_id(nombre, id_persona)
 
 
 # Uso del árbol B

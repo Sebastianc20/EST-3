@@ -1,5 +1,6 @@
 import json
 from Controller import RegistroPersonas
+from Model import limpiar_consola
 
 class VistaRegistroPersonas:
     def __init__(self):
@@ -62,7 +63,7 @@ class VistaRegistroPersonas:
             print("2. Insertar persona")
             print("3. Eliminar persona")
             print("4. Actualizar persona")
-            print("5. Buscar registros por nombre")
+            print("5. Buscar registros por nombre y Id")
             print("6. Salir")
 
             opcion = input("Selecciona una opción: ")
@@ -100,13 +101,22 @@ class VistaRegistroPersonas:
                 
             elif opcion == "5":
                 nombre = input("Nombre de la persona a buscar: ")
-                registros = self.base_de_datos.buscar_registros_por_nombre(nombre)
+                id_persona = input("ID de la persona a buscar: ")
+                
+                registros=[ ]
+                
+                if id_persona:
+                    id_persona = int(id_persona)
+                    registros = self.base_de_datos.buscar_registros_por_nombre(nombre, id_persona)
+
                 if registros:
                     print("\nRegistros encontrados:")
                     for registro in registros:
-                        print(registro)
+                        print(f"Nombre: {registro.Nombre}, ID: {registro.Id_Personas}, Fecha Nacimiento: {registro.Fecha_Nacimiento}, Dirección: {registro.Direccion}")
                 else:
-                    print("No se encontraron registros para ese nombre.")
+                    print("No se encontraron registros para los valores proporcionados.")
+
+                    
             elif opcion == "6":
                 break
             else:
