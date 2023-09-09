@@ -11,9 +11,7 @@ class VistaRegistroPersonas:
                 for line in jsonl_file:
                     partes = line.strip().split(";")  # Divide la línea en dos partes: operación y datos
                     operacion = partes[0]
-                    print(operacion)
                     datos_json = partes[1]  # Datos en formato JSON
-                    print(datos_json)
 
                     datos_persona = json.loads(datos_json)  # Convierte los datos JSON en un diccionario Python
 
@@ -30,19 +28,23 @@ class VistaRegistroPersonas:
                         id_persona = datos_persona["dpi"]
                         nueva_fecha_nacimiento = datos_persona["dateBirth"]
                         nueva_direccion = datos_persona["address"]
-                        self.base_de_datos.actualizar_persona(nombre, id_persona, nueva_fecha_nacimiento, nueva_direccion)
+                        self.base_de_datos.actualizar_persona_por_nombre_id(
+                            nombre,
+                            id_persona,
+                            nueva_fecha_nacimiento,
+                            nueva_direccion
+                        )
                         print(f"Fecha de nacimiento actualizada para: {nombre}")
 
                     elif operacion == "DELETE":
                         nombre = datos_persona["name"]
                         id_persona = datos_persona["dpi"]
-                        self.base_de_datos.eliminar_persona(nombre, id_persona)
+                        self.base_de_datos.eliminar_persona_por_nombre_id(nombre, id_persona)
                         print(f"Persona eliminada: {nombre}")
 
-                        print("Datos cargados exitosamente desde el archivo JSONL.")
+                print("Datos cargados exitosamente desde el archivo JSONL.")
         except FileNotFoundError as e:
             print(f"Error: {e}")
-
 
     def mostrar_menu(self):
         while True:
@@ -59,21 +61,24 @@ class VistaRegistroPersonas:
                 archivo_jsonl = input("Ingresa el nombre del archivo JSONL: ")
                 self.cargar_datos_desde_jsonl(archivo_jsonl)
 
-                
             elif opcion == "2":
                 nombre = input("Nombre de la persona a eliminar: ")
                 id_persona = int(input("ID de la persona a eliminar: "))
-                self.base_de_datos.eliminar_persona(nombre, id_persona)
-                print("Persona eliminada correctamente.")
-                
+                self.base_de_datos.eliminar_persona_por_nombre_id(nombre, id_persona)
+
+
             elif opcion == "3":
                 nombre = input("Nombre de la persona a actualizar: ")
-                id_persona = int(input("ID de la persona a actualizar: "))
+                id_persona = input("ID de la persona a actualizar: ")
                 nueva_fecha_nacimiento = input("Nueva fecha de nacimiento: ")
                 nueva_direccion = input("Nueva dirección: ")
-                self.base_de_datos.actualizar_persona(nombre, id_persona, nueva_fecha_nacimiento, nueva_direccion)
+                self.base_de_datos.actualizar_persona_por_nombre_id(
+                    id_persona,
+                    nueva_fecha_nacimiento,
+                    nueva_direccion
+                )
                 print("Persona actualizada correctamente.")
-                
+
             elif opcion == "4":
                 nombre = input("Nombre de la persona a buscar: ")
                 id_persona = input("ID de la persona a buscar: ")
@@ -90,7 +95,7 @@ class VistaRegistroPersonas:
                         json_str = json.dumps(json_data)
                         print(f"INSERT;{json_str}")
                 else:
-                        print(f"No se encontraron registros para el nombre: {nombre}")
+                    print(f"No se encontraron registros para el nombre: {nombre}")
 
             elif opcion == "5":
                 break
@@ -98,9 +103,5 @@ class VistaRegistroPersonas:
                 print("Opción no válida. Introduce un número del 1 al 5.")
 
 if __name__ == "__main__":
-    # Crear una instancia de la clase RegistroPersonas
-    base_de_datos = RegistroPersonas()
-
-    # Crear una instancia de la vista y mostrar el menú
     vista = VistaRegistroPersonas()
     vista.mostrar_menu()

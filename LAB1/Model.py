@@ -1,110 +1,180 @@
+class NodoArbolAVL:
+    def __init__(self, clave, persona):
+        self.clave = clave
+        self.persona = persona
+        self.altura = 1
+        self.izquierda = None
+        self.derecha = None
+
+class ArbolAVL:
+    def __init__(self):
+        self.raiz = None
         
-class NodoArbolB:
-    def __init__(self, es_hoja=True, max_claves=3):
-        self.es_hoja = es_hoja
-        self.claves = []
-        self.datos = []
-        self.hijos = []
-        self.padre = None
-        self.max_claves = max_claves
+    def altura(self, nodo):
+        if not nodo:
+            return 0
+        return nodo.altura
 
-    def insertar(self, clave, persona):
-        if self.es_nodo_lleno():
-            # Dividir el nodo si está lleno
-            self.dividir_nodo()
+    def balance(self, nodo):
+        if not nodo:
+            return 0
+        return self.altura(nodo.izquierda) - self.altura(nodo.derecha)
 
-        if self.es_hoja:
-            indice_insercion = 0
-            while indice_insercion < len(self.claves) and clave > self.claves[indice_insercion]:
-                indice_insercion += 1
+    def insertar(self, raiz, clave, persona):
+        if not raiz:
+            return NodoArbolAVL(clave, persona)
 
-            self.claves.insert(indice_insercion, clave)
-            self.datos.insert(indice_insercion, persona)
+        if clave < raiz.clave:
+            raiz.izquierda = self.insertar(raiz.izquierda, clave, persona)
         else:
-            indice_hijo = 0
-            while indice_hijo < len(self.claves) and clave > self.claves[indice_hijo]:
-                indice_hijo += 1
+            raiz.derecha = self.insertar(raiz.derecha, clave, persona)
 
-            if indice_hijo < len(self.hijos):
-                self.hijos[indice_hijo].insertar(clave, persona)
+        raiz.altura = 1 + max(self.altura(raiz.izquierda), self.altura(raiz.derecha))
+
+        balance = self.balance(raiz)
+
+        # Casos de rotación
+        if balance > 1:
+            if clave < raiz.izquierda.clave:
+                return self.rotacion_derecha(raiz)
             else:
-                nuevo_hijo = NodoArbolB(self.es_hoja, self.max_claves)
-                nuevo_hijo.insertar(clave, persona)
-                self.hijos.append(nuevo_hijo)
-                nuevo_hijo.padre = self
+                raiz.izquierda = self.rotacion_izquierda(raiz.izquierda)
+                return self.rotacion_derecha(raiz)
 
-    def dividir_nodo(self):
-        medio = len(self.claves) // 2
+        if balance < -1:
+            if clave > raiz.derecha.clave:
+                return self.rotacion_izquierda(raiz)
+            else:
+                raiz.derecha = self.rotacion_derecha(raiz.derecha)
+                return self.rotacion_izquierda(raiz)
 
-        nueva_clave = self.claves[medio]
-        nueva_persona = self.datos[medio]
+        return raiz
 
-        nuevo_nodo = NodoArbolB(self.es_hoja, self.max_claves)
-        nuevo_nodo.claves = self.claves[medio + 1:]
-        nuevo_nodo.datos = self.datos[medio + 1:]
-        self.claves = self.claves[:medio]
-        self.datos = self.datos[:medio]
+    def rotacion_izquierda(self, nodo_y):
+        nodo_x = nodo_y.derecha
+        nodo_z = nodo_x.izquierda
 
-        if not self.es_hoja:
-            nuevo_nodo.hijos = self.hijos[medio + 1:]
-            self.hijos = self.hijos[:medio + 1]
+        nodo_x.izquierda = nodo_y
+        nodo_y.derecha = nodo_z
 
-        if self.padre is None:
-            nuevo_padre = NodoArbolB(False, self.max_claves)
-            nuevo_padre.claves.append(nueva_clave)
-            nuevo_padre.hijos.append(self)
-            nuevo_padre.hijos.append(nuevo_nodo)
+        nodo_y.altura = 1 + max(self.altura(nodo_y.izquierda), self.altura(nodo_y.derecha))
+        nodo_x.altura = 1 + max(self.altura(nodo_x.izquierda), self.altura(nodo_x.derecha))
 
-            self.padre = nuevo_padre
-            nuevo_nodo.padre = nuevo_padre
-        else:
-            self.padre.insertar(nueva_clave, nueva_persona)
+        return nodo_x
 
-    def es_nodo_lleno(self):
-        return len(self.claves) >= self.max_claves
-    
-    
-    def buscar_por_nombre_y_id(self, nombre, id_persona):
+    def rotacion_derecha(self, nodo_x):
+        nodo_y = nodo_x.izquierda
+        nodo_z = nodo_y.derecha
+
+        nodo_y.derecha = nodo_x
+        nodo_x.izquierda = nodo_z
+
+        nodo_x.altura = 1 + max(self.altura(nodo_x.izquierda), self.altura(nodo_x.derecha))
+        nodo_y.altura = 1 + max(self.altura(nodo_y.izquierda), self.altura(nodo_y.derecha))
+
+        return nodo_y
+
+    def buscar_por_nombre_y_id(self, raiz, nombre, id_persona):
         resultados = []
 
-        def buscar_en_nodo(nodo):
-            if not nodo:
-                return
+        if not raiz:
+            return resultados
 
-            for i in range(len(nodo.claves)):
-                clave = nodo.claves[i]
-                if nombre == clave[0] and (id_persona is None or id_persona == clave[1]):
-                    resultados.append(nodo.datos[i])
+        if nombre == raiz.clave[0] and (id_persona is None or id_persona == raiz.clave[1]):
+            resultados.append(raiz.persona)
 
-                if not nodo.es_hoja:
-                    buscar_en_nodo(nodo.hijos[i])
+        if nombre < raiz.clave[0] or (nombre == raiz.clave[0] and (id_persona is None or id_persona < raiz.clave[1])):
+            resultados.extend(self.buscar_por_nombre_y_id(raiz.izquierda, nombre, id_persona))
 
-            if not nodo.es_hoja:
-                buscar_en_nodo(nodo.hijos[-1])
-
-        buscar_en_nodo(self)
+        resultados.extend(self.buscar_por_nombre_y_id(raiz.derecha, nombre, id_persona))
 
         return resultados
+    
+    
+    
+    def actualizar_persona(self, raiz, clave, nuevos_datos):
+        if not raiz:
+            return None
 
+        if clave < raiz.clave:
+            raiz.izquierda = self.actualizar_persona(raiz.izquierda, clave, nuevos_datos)
+        elif clave > raiz.clave:
+            raiz.derecha = self.actualizar_persona(raiz.derecha, clave, nuevos_datos)
+        else:
+            # Encontramos la persona a actualizar
+            persona = raiz.persona
+            persona.Nombre = nuevos_datos.get("name", persona.Nombre)
+            persona.Fecha_Nacimiento = nuevos_datos.get("dateBirth", persona.Fecha_Nacimiento)
+            persona.Direccion = nuevos_datos.get("address", persona.Direccion)
+            return raiz
 
-class ArbolB:
-    def __init__(self, orden):
-        self.raiz = NodoArbolB(True, orden)
-        self.orden = orden
+        raiz.altura = 1 + max(self.altura(raiz.izquierda), self.altura(raiz.derecha))
 
-    def insertar(self, clave, persona):
-        self.raiz.insertar(clave, persona)
+        balance = self.balance(raiz)
 
-    def eliminar(self, clave):
-        pass
+        # Casos de rotación
+        if balance > 1:
+            if clave < raiz.izquierda.clave:
+                return self.rotacion_derecha(raiz)
+            else:
+                raiz.izquierda = self.rotacion_izquierda(raiz.izquierda)
+                return self.rotacion_derecha(raiz)
 
-    def actualizar(self, clave, nueva_persona):
-        pass
+        if balance < -1:
+            if clave > raiz.derecha.clave:
+                return self.rotacion_izquierda(raiz)
+            else:
+                raiz.derecha = self.rotacion_derecha(raiz.derecha)
+                return self.rotacion_izquierda(raiz)
 
-    def buscar(self, nombre, id_persona):
-       return self.raiz.buscar_por_nombre_y_id(nombre, id_persona)
+        return raiz
+    
+    
+    
+    def eliminar(self, raiz, clave):
+        if not raiz:
+            return raiz
 
+        if clave < raiz.clave:
+            raiz.izquierda = self.eliminar(raiz.izquierda, clave)
+        elif clave > raiz.clave:
+            raiz.derecha = self.eliminar(raiz.derecha, clave)
+        else:
+            # Encontramos el nodo a eliminar
+            if not raiz.izquierda:
+                return raiz.derecha
+            elif not raiz.derecha:
+                return raiz.izquierda
+            # Nodo con dos hijos: obtenemos el sucesor in-order (el nodo más pequeño en el subárbol derecho)
+            sucesor = self.get_sucesor(raiz.derecha)
+            # Copiamos los datos del sucesor a este nodo
+            raiz.clave = sucesor.clave
+            raiz.persona = sucesor.persona
+            # Eliminamos el sucesor
+            raiz.derecha = self.eliminar(raiz.derecha, sucesor.clave)
 
-# Uso del árbol B
-T = 2
-arbol_b = ArbolB(T)
+        raiz.altura = 1 + max(self.altura(raiz.izquierda), self.altura(raiz.derecha))
+
+        balance = self.balance(raiz)
+
+        # Casos de rotación
+        if balance > 1:
+            if clave < raiz.izquierda.clave:
+                return self.rotacion_derecha(raiz)
+            else:
+                raiz.izquierda = self.rotacion_izquierda(raiz.izquierda)
+                return self.rotacion_derecha(raiz)
+
+        if balance < -1:
+            if clave > raiz.derecha.clave:
+                return self.rotacion_izquierda(raiz)
+            else:
+                raiz.derecha = self.rotacion_derecha(raiz.derecha)
+                return self.rotacion_izquierda(raiz)
+
+        return raiz
+
+def get_sucesor(self, nodo):
+    if not nodo or not nodo.izquierda:
+        return nodo
+    return self.get_sucesor(nodo.izquierda)
