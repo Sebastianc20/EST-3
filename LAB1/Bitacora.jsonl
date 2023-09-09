@@ -1,2 +1,29 @@
 INSERT;{"name":"sebastian cuevas","dpi":"2011002194","dateBirth":"1987-09-20", "address":"123 Main St, Mexico City"}
 INSERT;{"name":"Sophia Rodriguez","dpi":"23456789012345","dateBirth":"1995-03-12", "address":"456 Elm Ave, Bogota"}
+PATCH;{"name":"Luis Hernandez", "dpi":"12345678901234","dateBirth":"1990-07-15"}
+INSERT;{"name":"Carlos Mendoza","dpi":"34567890123456","dateBirth":"1978-12-01", "address":"567 Pine St, Lima"}
+INSERT;{"name":"Elena Chavez","dpi":"45678901234567","dateBirth":"1982-05-25", "address":"789 Maple Ave, Quito"}
+DELETE;{"name":"Luis Hernandez","dpi":"12345678901234"}
+INSERT;{"name":"Diego Morales","dpi":"56789012345678","dateBirth":"1999-02-18", "address":"890 Cedar Rd, Santiago"}
+INSERT;{"name":"Isabella Gomez","dpi":"67890123456789","dateBirth":"1989-11-07", "address":"123 Palm Ave, Buenos Aires"}
+DELETE;{"name":"Isabella Gomez","dpi":"67890123456789"}
+INSERT;{"name":"Andres Fernandez","dpi":"78901234567890","dateBirth":"2000-08-30", "address":"345 Oak Rd, Montevideo"}
+INSERT;{"name":"Valentina Lopez","dpi":"89012345678901","dateBirth":"1975-06-14", "address":"678 Elm Ave, Asuncion"}
+PATCH;{"name":"Andres Fernandez", "dpi":"78901234567890","dateBirth":"2002-04-10"}
+DELETE;{"name":"Andres Fernandez","dpi":"78901234567890"}
+INSERT;{"name":"Martina Ramirez","dpi":"90123456789012","dateBirth":"1991-10-23", "address":"890 Maple Ave, La Paz"}
+INSERT;{"name":"Javier Torres","dpi":"12345678901234","dateBirth":"1984-09-05", "address":"567 Palm Ave, Caracas"}
+DELETE;{"name":"Javier Torres","dpi":"12345678901234"}
+INSERT;{"name":"Carmen Martinez","dpi":"23456789012345","dateBirth":"1993-12-07", "address":"234 Elm Ave, Lima"}
+INSERT;{"name":"Santiago Rodriguez","dpi":"34567890123456","dateBirth":"1983-02-19", "address":"456 Oak Rd, Santiago"}
+PATCH;{"name":"Carmen Martinez", "dpi":"23456789012345","dateBirth":"1998-05-28"}
+DELETE;{"name":"Carmen Martinez","dpi":"23456789012345"}
+INSERT;{"name":"Mateo Fernandez","dpi":"45678901234567","dateBirth":"2001-07-15", "address":"567 Pine St, Buenos Aires"}
+INSERT;{"name":"Emilia Lopez","dpi":"56789012345678","dateBirth":"1977-11-09", "address":"678 Elm Ave, Quito"}
+DELETE;{"name":"Mateo Fernandez","dpi":"45678901234567"}
+INSERT;{"name":"Ana Gomez","dpi":"67890123456789","dateBirth":"1986-04-26", "address":"123 Maple Ave, Bogota"}
+INSERT;{"name":"Daniel Ramirez","dpi":"78901234567890","dateBirth":"1997-03-08", "address":"234 Oak Rd, Caracas"}
+PATCH;{"name":"Ana Gomez", "dpi":"67890123456789","dateBirth":"1990-09-12"}
+DELETE;{"name":"Ana Gomez","dpi":"67890123456789"}
+INSERT;{"name":"Camila Hernandez","dpi":"89012345678901","dateBirth":"2002-08-17", "address":"345 Elm Ave, Buenos Aires"}
+INSERT;{"name":"Jose Torres","dpi":"90123456789012","dateBirth":"1974-01-31", "address":"456 Pine St, Santiago"}

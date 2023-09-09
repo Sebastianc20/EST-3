@@ -27,7 +27,11 @@ class VistaRegistroPersonas:
                         nombre = datos_persona["name"]
                         id_persona = datos_persona["dpi"]
                         nueva_fecha_nacimiento = datos_persona["dateBirth"]
-                        self.actualizar_fecha_nacimiento(nombre, id_persona, nueva_fecha_nacimiento)
+                        self.base_de_datos.actualizar_persona_por_nombre_id(
+                            nombre,
+                            id_persona,
+                            nueva_fecha_nacimiento
+                        )
                         print(f"Fecha de nacimiento actualizada para: {nombre}")
 
 
