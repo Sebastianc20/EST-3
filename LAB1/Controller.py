@@ -28,13 +28,17 @@ class RegistroPersonas:
     def buscar_registros_por_nombre(self, nombre, id_persona):
         return self.arbol_avl.buscar_por_nombre_y_id(self.arbol_avl.raiz, nombre, id_persona)
     
-    def actualizar_persona_por_nombre_id(self, nombre, id_persona, nuevos_datos):
+    def actualizar_persona_por_nombre_id(self, nombre, id_persona, nueva_fecha_nacimiento):
         clave = (nombre, id_persona)
+        nuevos_datos = {
+            "dateBirth": nueva_fecha_nacimiento
+        }
         self.arbol_avl.raiz = self.arbol_avl.actualizar_persona(self.arbol_avl.raiz, clave, nuevos_datos)
         if self.arbol_avl.raiz:
-            print(f"Persona actualizada correctamente: {nombre}")
+            print(f"Fecha de nacimiento actualizada correctamente para: {nombre}")
         else:
             print(f"No se encontró la persona con nombre {nombre} e ID {id_persona}")
+
             
     def procesar_jsonl(self, archivo_jsonl):
         try:

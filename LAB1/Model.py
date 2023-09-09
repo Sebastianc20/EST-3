@@ -92,20 +92,18 @@ class ArbolAVL:
     
     
     
-    def actualizar_persona(self, raiz, clave, nuevos_datos):
+    def actualizar_persona(self, raiz, clave, nueva_fecha_nacimiento):
         if not raiz:
             return None
 
         if clave < raiz.clave:
-            raiz.izquierda = self.actualizar_persona(raiz.izquierda, clave, nuevos_datos)
+            raiz.izquierda = self.actualizar_persona(raiz.izquierda, clave, nueva_fecha_nacimiento)
         elif clave > raiz.clave:
-            raiz.derecha = self.actualizar_persona(raiz.derecha, clave, nuevos_datos)
+            raiz.derecha = self.actualizar_persona(raiz.derecha, clave, nueva_fecha_nacimiento)
         else:
             # Encontramos la persona a actualizar
             persona = raiz.persona
-            persona.Nombre = nuevos_datos.get("name", persona.Nombre)
-            persona.Fecha_Nacimiento = nuevos_datos.get("dateBirth", persona.Fecha_Nacimiento)
-            persona.Direccion = nuevos_datos.get("address", persona.Direccion)
+            persona.Fecha_Nacimiento = nueva_fecha_nacimiento
             return raiz
 
         raiz.altura = 1 + max(self.altura(raiz.izquierda), self.altura(raiz.derecha))
@@ -128,6 +126,7 @@ class ArbolAVL:
                 return self.rotacion_izquierda(raiz)
 
         return raiz
+
     
     
     

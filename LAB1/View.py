@@ -27,14 +27,9 @@ class VistaRegistroPersonas:
                         nombre = datos_persona["name"]
                         id_persona = datos_persona["dpi"]
                         nueva_fecha_nacimiento = datos_persona["dateBirth"]
-                        nueva_direccion = datos_persona["address"]
-                        self.base_de_datos.actualizar_persona_por_nombre_id(
-                            nombre,
-                            id_persona,
-                            nueva_fecha_nacimiento,
-                            nueva_direccion
-                        )
+                        self.actualizar_fecha_nacimiento(nombre, id_persona, nueva_fecha_nacimiento)
                         print(f"Fecha de nacimiento actualizada para: {nombre}")
+
 
                     elif operacion == "DELETE":
                         nombre = datos_persona["name"]
@@ -71,13 +66,12 @@ class VistaRegistroPersonas:
                 nombre = input("Nombre de la persona a actualizar: ")
                 id_persona = input("ID de la persona a actualizar: ")
                 nueva_fecha_nacimiento = input("Nueva fecha de nacimiento: ")
-                nueva_direccion = input("Nueva dirección: ")
                 self.base_de_datos.actualizar_persona_por_nombre_id(
+                    nombre,
                     id_persona,
-                    nueva_fecha_nacimiento,
-                    nueva_direccion
+                    nueva_fecha_nacimiento
                 )
-                print("Persona actualizada correctamente.")
+                
 
             elif opcion == "4":
                 nombre = input("Nombre de la persona a buscar: ")
