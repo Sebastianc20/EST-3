@@ -173,7 +173,7 @@ class ArbolAVL:
 
         return raiz
 
-def get_sucesor(self, nodo):
-    if not nodo or not nodo.izquierda:
-        return nodo
-    return self.get_sucesor(nodo.izquierda)
+    def get_sucesor(self, nodo):
+        if not nodo or not nodo.izquierda:
+            return nodo
+        return self.get_sucesor(nodo.izquierda)

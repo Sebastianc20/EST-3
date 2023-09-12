@@ -10,8 +10,9 @@ class VistaRegistroPersonas:
             with open(archivo_jsonl, "r") as jsonl_file:
                 for line in jsonl_file:
                     partes = line.strip().split(";")  # Divide la línea en dos partes: operación y datos
-                    operacion = partes[0]
-                    datos_json = partes[1]  # Datos en formato JSON
+                    if len(partes) >= 2: #verifica si hay al menos dos partes
+                        operacion = partes[0]
+                        datos_json = partes[1] # Datos en formato Json
 
                     datos_persona = json.loads(datos_json)  # Convierte los datos JSON en un diccionario Python
 
