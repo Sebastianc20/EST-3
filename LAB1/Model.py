@@ -50,6 +50,7 @@ class ArbolAVL:
 
         return raiz
 
+
     def rotacion_izquierda(self, nodo_y):
         nodo_x = nodo_y.derecha
         nodo_z = nodo_x.izquierda
@@ -91,20 +92,25 @@ class ArbolAVL:
         return resultados
     
     
-    
-    def actualizar_persona(self, raiz, clave, nueva_fecha_nacimiento):
+    def actualizar_persona(self, raiz, clave, nueva_fecha_nacimiento, nueva_direccion, nuevas_empresas):
         if not raiz:
             return None
 
         if clave < raiz.clave:
-            raiz.izquierda = self.actualizar_persona(raiz.izquierda, clave, nueva_fecha_nacimiento)
+            raiz.izquierda = self.actualizar_persona(raiz.izquierda, clave, nueva_fecha_nacimiento, nueva_direccion, nuevas_empresas)
         elif clave > raiz.clave:
-            raiz.derecha = self.actualizar_persona(raiz.derecha, clave, nueva_fecha_nacimiento)
+            raiz.derecha = self.actualizar_persona(raiz.derecha, clave, nueva_fecha_nacimiento, nueva_direccion, nuevas_empresas)
         else:
             # Encontramos la persona a actualizar
             persona = raiz.persona
-            persona.Fecha_Nacimiento = nueva_fecha_nacimiento
+            if persona:
+                persona.fecha_nacimiento = nueva_fecha_nacimiento
+                persona.direccion = nueva_direccion
+                persona.empresas = nuevas_empresas
             return raiz
+
+        if not raiz:
+            return None  # Añadir esta comprobación
 
         raiz.altura = 1 + max(self.altura(raiz.izquierda), self.altura(raiz.derecha))
 
@@ -112,22 +118,23 @@ class ArbolAVL:
 
         # Casos de rotación
         if balance > 1:
-            if clave < raiz.izquierda.clave:
+            if raiz.izquierda and clave < raiz.izquierda.clave:
                 return self.rotacion_derecha(raiz)
             else:
-                raiz.izquierda = self.rotacion_izquierda(raiz.izquierda)
+                if raiz.izquierda:
+                    raiz.izquierda = self.rotacion_izquierda(raiz.izquierda)
                 return self.rotacion_derecha(raiz)
 
         if balance < -1:
-            if clave > raiz.derecha.clave:
+            if raiz.derecha and clave > raiz.derecha.clave:
                 return self.rotacion_izquierda(raiz)
             else:
-                raiz.derecha = self.rotacion_derecha(raiz.derecha)
+                if raiz.derecha:
+                    raiz.derecha = self.rotacion_derecha(raiz.derecha)
                 return self.rotacion_izquierda(raiz)
 
         return raiz
 
-    
     
     
     def eliminar(self, raiz, clave):
@@ -152,26 +159,30 @@ class ArbolAVL:
             # Eliminamos el sucesor
             raiz.derecha = self.eliminar(raiz.derecha, sucesor.clave)
 
+        # Después de la eliminación, verifica y actualiza la altura y el balance
         raiz.altura = 1 + max(self.altura(raiz.izquierda), self.altura(raiz.derecha))
 
         balance = self.balance(raiz)
 
         # Casos de rotación
         if balance > 1:
-            if clave < raiz.izquierda.clave:
+            if raiz.izquierda and clave < raiz.izquierda.clave:
                 return self.rotacion_derecha(raiz)
             else:
-                raiz.izquierda = self.rotacion_izquierda(raiz.izquierda)
+                if raiz.izquierda:
+                    raiz.izquierda = self.rotacion_izquierda(raiz.izquierda)
                 return self.rotacion_derecha(raiz)
 
         if balance < -1:
-            if clave > raiz.derecha.clave:
+            if raiz.derecha and clave > raiz.derecha.clave:
                 return self.rotacion_izquierda(raiz)
             else:
-                raiz.derecha = self.rotacion_derecha(raiz.derecha)
+                if raiz.derecha:
+                    raiz.derecha = self.rotacion_derecha(raiz.derecha)
                 return self.rotacion_izquierda(raiz)
 
         return raiz
+
 
     def get_sucesor(self, nodo):
         if not nodo or not nodo.izquierda:

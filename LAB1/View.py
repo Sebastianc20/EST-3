@@ -9,51 +9,86 @@ class VistaRegistroPersonas:
         try:
             with open(archivo_jsonl, "r") as jsonl_file:
                 for line in jsonl_file:
-                    partes = line.strip().split(";")  # Divide la línea en dos partes: operación y datos
-                    if len(partes) >= 2: #verifica si hay al menos dos partes
-                        operacion = partes[0]
-                        datos_json = partes[1] # Datos en formato Json
+                    line = line.strip()
+                    if not line:
+                        continue
 
-                    datos_persona = json.loads(datos_json)  # Convierte los datos JSON en un diccionario Python
+                    parts = line.split(";")
+                    if len(parts) != 2 or parts[0] not in ["INSERT", "PATCH", "DELETE"]:
+                        print(f"Error: Formato de línea incorrecto en el archivo JSONL.")
+                        continue
 
-                    if operacion == "INSERT":
-                        nombre = datos_persona["name"]
-                        id_persona = datos_persona["dpi"]
-                        fecha_nacimiento = datos_persona["dateBirth"]
-                        direccion = datos_persona["address"]
-                        self.base_de_datos.insertar_persona(nombre, id_persona, fecha_nacimiento, direccion)
-                        print(f"Persona insertada correctamente: {nombre}")
+                    datos_json = {}
+                    try:
+                        datos_json = json.loads(parts[1])
+                    except json.JSONDecodeError as e:
+                        print(f"Error al procesar la línea JSONL: {e}")
+                        continue
 
-                    elif operacion == "PATCH":
-                        nombre = datos_persona["name"]
-                        id_persona = datos_persona["dpi"]
-                        nueva_fecha_nacimiento = datos_persona["dateBirth"]
+                    if parts[0] == "INSERT":
+                        nombre = datos_json.get("name", "")
+                        id_persona = datos_json.get("dpi", "")
+                        fecha_nacimiento = datos_json.get("datebirth", "")
+                        direccion = datos_json.get("address", "")
+                        empresas = datos_json.get("companies", [])
+                                              
+                        self.base_de_datos.insertar_persona(nombre, id_persona, fecha_nacimiento, direccion, empresas)
+                        nuevos_datos = {
+                            "datebirth": fecha_nacimiento,
+                            "address": direccion,
+                            "companies": empresas
+                        }                       
+
+                    elif parts[0] == "PATCH":
+                        nombre = datos_json.get("name", "")
+                        id_persona = datos_json.get("dpi", "")
+                        nuevos_datos = datos_json.get("new_data", {})
+                        nueva_fecha_nacimiento = nuevos_datos.get("datebirth")
+                        nueva_direccion = nuevos_datos.get("address")
+                        nuevas_empresas = nuevos_datos.get("companies")
+
                         self.base_de_datos.actualizar_persona_por_nombre_id(
                             nombre,
                             id_persona,
-                            nueva_fecha_nacimiento
+                            nueva_fecha_nacimiento,
+                            nueva_direccion,
+                            nuevas_empresas
                         )
-                        print(f"Fecha de nacimiento actualizada para: {nombre}")
+
+                        persona = self.base_de_datos.buscar_registros_por_nombre(nombre, id_persona)
+                        if persona is None:
+                            print(f"No se encontró la persona: {nombre}")
+                            continue
+                        print(f"Se ha actualizado la persona correctamente: {nombre}")
+
+                    elif parts[0] == "DELETE":
+                        nombre = datos_json.get("name", "")
+                        id_persona = datos_json.get("dpi", "")
+                        
+                        # Buscar la persona en el árbol AVL
+                        persona = self.base_de_datos.buscar_registros_por_nombre(nombre, id_persona)
+                        
+                        if persona:
+                            # La persona se encontró en el árbol, ahora puedes eliminarla
+                            self.base_de_datos.eliminar_persona_por_nombre_id(nombre, id_persona)
+                            print(f"Persona eliminada correctamente: {nombre}")
+                        else:
+                            print(f"No se encontró la persona con nombre {nombre} e ID {id_persona}")
 
 
-                    elif operacion == "DELETE":
-                        nombre = datos_persona["name"]
-                        id_persona = datos_persona["dpi"]
-                        self.base_de_datos.eliminar_persona_por_nombre_id(nombre, id_persona)
-                        print(f"Persona eliminada: {nombre}")
+        except FileNotFoundError:
+            print(f"Error: El archivo {archivo_jsonl} no existe.")
+        except Exception as e:
+            print(f"Error al cargar los datos desde el archivo JSONL: {e}")
 
-                print("Datos cargados exitosamente desde el archivo JSONL.")
-        except FileNotFoundError as e:
-            print(f"Error: {e}")
 
     def mostrar_menu(self):
         while True:
             print("\nMenú:")
             print("1. Cargar datos desde archivo JSONL")
             print("2. Eliminar persona")
-            print("3. Actualizar persona")
-            print("4. Buscar registros por nombre y ID")
-            print("5. Salir")
+            print("3. Buscar registros por nombre y ID")
+            print("4. Salir")
 
             opcion = input("Selecciona una opción: ")
 
@@ -68,17 +103,6 @@ class VistaRegistroPersonas:
 
 
             elif opcion == "3":
-                nombre = input("Nombre de la persona a actualizar: ")
-                id_persona = input("ID de la persona a actualizar: ")
-                nueva_fecha_nacimiento = input("Nueva fecha de nacimiento: ")
-                self.base_de_datos.actualizar_persona_por_nombre_id(
-                    nombre,
-                    id_persona,
-                    nueva_fecha_nacimiento
-                )
-                
-
-            elif opcion == "4":
                 nombre = input("Nombre de la persona a buscar: ")
                 id_persona = input("ID de la persona a buscar: ")
                 registros = self.base_de_datos.buscar_registros_por_nombre(nombre, id_persona)
@@ -88,18 +112,19 @@ class VistaRegistroPersonas:
                         json_data = {
                             "name": registro.Nombre,
                             "dpi": registro.Id_Personas,
-                            "dateBirth": registro.Fecha_Nacimiento,
-                            "address": registro.Direccion
+                            "datebirth": registro.Fecha_Nacimiento,
+                            "address": registro.Direccion,
+                            "companies": registro.companies
                         }
                         json_str = json.dumps(json_data)
                         print(f"INSERT;{json_str}")
                 else:
                     print(f"No se encontraron registros para el nombre: {nombre}")
 
-            elif opcion == "5":
+            elif opcion == "4":
                 break
             else:
-                print("Opción no válida. Introduce un número del 1 al 5.")
+                print("Opción no válida. Introduce un número del 1 al 4.")
 
 if __name__ == "__main__":
     vista = VistaRegistroPersonas()
